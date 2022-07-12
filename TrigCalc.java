@@ -1,4 +1,6 @@
 import java.lang.Math;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 public class TrigCalc {
   private double A, B, C, a, b, c; 
@@ -59,12 +61,15 @@ public class TrigCalc {
   }
 
   public void printVals() {
-    System.out.println("A = "    + this.A + 
-                       ";  B = " + this.B + 
-                       ";  C = " + this.C + 
-                       ";  a = " + this.a + 
-                       ";  b = " + this.b +
-                       ";  c = " + this.c
+    DecimalFormat df = new DecimalFormat("#.00");
+    df.setRoundingMode(RoundingMode.HALF_UP);
+    System.out.println("\tA = " + df.format(this.A) + 
+                       "\tB = " + df.format(this.B) + 
+                       "\tC = " + df.format(this.C) + 
+                       "\ta = " + df.format(this.a) + 
+                       "\tb = " + df.format(this.b) +
+                       "\tc = " + df.format(this.c) +
+                       "\n"
                       );
   }
 
