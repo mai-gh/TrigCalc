@@ -123,13 +123,21 @@ public class TrigCalc {
     return ((this.A == 0) && (this.B == 0) && (this.C == 0) && (this.a > 0) && (this.b > 0) && (this.c > 0)); // a & b & c
   }
 
-  public void solveAAS() {
+  public void findLastAngle() {
     if ((this.A > 0) && (this.B > 0) && (this.A >= this.B)) this.C = 180 - this.A - this.B;
     if ((this.A > 0) && (this.B > 0) && (this.B >  this.A)) this.C = 180 - this.B - this.A;
     if ((this.A > 0) && (this.C > 0) && (this.A >= this.C)) this.B = 180 - this.A - this.C;
     if ((this.A > 0) && (this.C > 0) && (this.C >  this.A)) this.B = 180 - this.C - this.A;
     if ((this.B > 0) && (this.C > 0) && (this.B >= this.C)) this.A = 180 - this.B - this.C;
     if ((this.B > 0) && (this.C > 0) && (this.C >  this.B)) this.A = 180 - this.C - this.B;
+  }
+
+  public void solveAAA() {
+    assert true; // do nothing
+  }
+
+  public void solveAAS() {
+    findLastAngle();
     if ((this.a == 0) && (this.b > 0)) this.a = (this.b / Math.sin(Math.toRadians(this.B))) * Math.sin(Math.toRadians(this.A));
     if ((this.a == 0) && (this.c > 0)) this.a = (this.c / Math.sin(Math.toRadians(this.C))) * Math.sin(Math.toRadians(this.A));
     if ((this.b == 0) && (this.a > 0)) this.b = (this.a / Math.sin(Math.toRadians(this.A))) * Math.sin(Math.toRadians(this.B));
@@ -138,11 +146,25 @@ public class TrigCalc {
     if ((this.c == 0) && (this.b > 0)) this.c = (this.b / Math.sin(Math.toRadians(this.B))) * Math.sin(Math.toRadians(this.C));
   }
 
+  public void solveSAS() {
+    if (this.A > 0) this.a = Math.sqrt((Math.pow(this.b, 2) + Math.pow(this.c, 2)) - (2 * this.b * this.c * Math.cos(Math.toRadians(this.A))));
+    if (this.B > 0) this.b = Math.sqrt((Math.pow(this.a, 2) + Math.pow(this.c, 2)) - (2 * this.a * this.c * Math.cos(Math.toRadians(this.B))));
+    if (this.C > 0) this.c = Math.sqrt((Math.pow(this.a, 2) + Math.pow(this.b, 2)) - (2 * this.a * this.b * Math.cos(Math.toRadians(this.C))));
+    if ((this.A > 0) && (this.b <= this.c)) this.B = Math.toDegrees(Math.asin((Math.sin(Math.toRadians(this.A)) * this.b) / this.a));
+    if ((this.A > 0) && (this.b >  this.c)) this.C = Math.toDegrees(Math.asin((Math.sin(Math.toRadians(this.A)) * this.c) / this.a));
+    if ((this.B > 0) && (this.a <= this.c)) this.A = Math.toDegrees(Math.asin((Math.sin(Math.toRadians(this.B)) * this.a) / this.b));
+    if ((this.B > 0) && (this.a >  this.c)) this.C = Math.toDegrees(Math.asin((Math.sin(Math.toRadians(this.B)) * this.c) / this.b));
+    if ((this.C > 0) && (this.a <= this.b)) this.A = Math.toDegrees(Math.asin((Math.sin(Math.toRadians(this.C)) * this.a) / this.c));
+    if ((this.C > 0) && (this.a >  this.b)) this.B = Math.toDegrees(Math.asin((Math.sin(Math.toRadians(this.C)) * this.b) / this.c));
+    findLastAngle();
+  }
+
   public static void main(String[] args) {
     TrigCalc tc = new TrigCalc();
     tc.printDiagram();
     tc.parseArgs(args);
-    if (tc.isAAS()) tc.solveAAS();
+    if ( tc.isAAS() || tc.isASA() ) tc.solveAAS();
+    if ( tc.isSAS() ) tc.solveSAS();
     tc.printVals();
   }
 }
