@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 
 public class TrigCalc {
   private double A, B, C, a, b, c; 
+  private String solutionMethod = "NNN";
 
   public void parseArgs(String[] args) {
     for (int i = 0; i < args.length; i++) {
@@ -63,12 +64,13 @@ public class TrigCalc {
   public void printVals() {
     DecimalFormat df = new DecimalFormat("#.00");
     df.setRoundingMode(RoundingMode.HALF_UP);
-    System.out.println("\tA = " + df.format(this.A) + 
-                       "\tB = " + df.format(this.B) + 
-                       "\tC = " + df.format(this.C) + 
-                       "\ta = " + df.format(this.a) + 
-                       "\tb = " + df.format(this.b) +
-                       "\tc = " + df.format(this.c) +
+    System.out.println("    M = " + solutionMethod    + 
+                       "    A = " + df.format(this.A) + 
+                       "    B = " + df.format(this.B) + 
+                       "    C = " + df.format(this.C) + 
+                       "    a = " + df.format(this.a) + 
+                       "    b = " + df.format(this.b) +
+                       "    c = " + df.format(this.c) +
                        "\n"
                       );
   }
@@ -123,6 +125,48 @@ public class TrigCalc {
     return ((this.A == 0) && (this.B == 0) && (this.C == 0) && (this.a > 0) && (this.b > 0) && (this.c > 0)); // a & b & c
   }
 
+  public boolean isInvalidSSA() {
+    if ((this.A > 0 ) && (this.a > 0) && (this.b > 0)) return (((this.b * Math.sin(Math.toRadians(this.A))) / this.a) >= 1);
+    if ((this.A > 0 ) && (this.a > 0) && (this.c > 0)) return (((this.c * Math.sin(Math.toRadians(this.A))) / this.a) >= 1);
+    if ((this.B > 0 ) && (this.b > 0) && (this.a > 0)) return (((this.a * Math.sin(Math.toRadians(this.B))) / this.b) >= 1);
+    if ((this.B > 0 ) && (this.b > 0) && (this.c > 0)) return (((this.c * Math.sin(Math.toRadians(this.B))) / this.b) >= 1);
+    if ((this.C > 0 ) && (this.c > 0) && (this.a > 0)) return (((this.a * Math.sin(Math.toRadians(this.C))) / this.c) >= 1);
+    if ((this.C > 0 ) && (this.c > 0) && (this.b > 0)) return (((this.b * Math.sin(Math.toRadians(this.C))) / this.c) >= 1);
+    return false;
+  }
+
+  public boolean isRightSSA() {
+    if ((this.A > 0 ) && (this.a > 0) && (this.b > 0)) return (this.a == (this.b * Math.sin(Math.toRadians(this.A))));
+    if ((this.A > 0 ) && (this.a > 0) && (this.c > 0)) return (this.a == (this.c * Math.sin(Math.toRadians(this.A))));
+    if ((this.B > 0 ) && (this.b > 0) && (this.a > 0)) return (this.b == (this.a * Math.sin(Math.toRadians(this.B))));
+    if ((this.B > 0 ) && (this.b > 0) && (this.c > 0)) return (this.b == (this.c * Math.sin(Math.toRadians(this.B))));
+    if ((this.C > 0 ) && (this.c > 0) && (this.a > 0)) return (this.c == (this.a * Math.sin(Math.toRadians(this.C))));
+    if ((this.C > 0 ) && (this.c > 0) && (this.b > 0)) return (this.c == (this.b * Math.sin(Math.toRadians(this.C))));
+
+    return false;
+  }
+
+  public boolean isAmbiguousSSA() {
+    if ((this.A > 0 ) && (this.a > 0) && (this.b > 0)) return (this.a > (this.b * Math.sin(Math.toRadians(this.A))));
+    if ((this.A > 0 ) && (this.a > 0) && (this.c > 0)) return (this.a > (this.c * Math.sin(Math.toRadians(this.A))));
+    if ((this.B > 0 ) && (this.b > 0) && (this.a > 0)) return (this.b > (this.a * Math.sin(Math.toRadians(this.B))));
+    if ((this.B > 0 ) && (this.b > 0) && (this.c > 0)) return (this.b > (this.c * Math.sin(Math.toRadians(this.B))));
+    if ((this.C > 0 ) && (this.c > 0) && (this.a > 0)) return (this.c > (this.a * Math.sin(Math.toRadians(this.C))));
+    if ((this.C > 0 ) && (this.c > 0) && (this.b > 0)) return (this.c > (this.b * Math.sin(Math.toRadians(this.C))));
+
+    return false;
+  }
+
+  public boolean isObliqueSSA() {
+    if ((this.A > 0 ) && (this.a > 0) && (this.b > 0)) return (this.a > this.b);
+    if ((this.A > 0 ) && (this.a > 0) && (this.c > 0)) return (this.a > this.c);
+    if ((this.B > 0 ) && (this.b > 0) && (this.a > 0)) return (this.b > this.a);
+    if ((this.B > 0 ) && (this.b > 0) && (this.c > 0)) return (this.b > this.c);
+    if ((this.C > 0 ) && (this.c > 0) && (this.a > 0)) return (this.c > this.a);
+    if ((this.C > 0 ) && (this.c > 0) && (this.b > 0)) return (this.c > this.b);
+    return false;
+  }
+
   public void findLastAngle() {
     if ((this.A > 0) && (this.B > 0) && (this.A >= this.B)) this.C = 180 - this.A - this.B;
     if ((this.A > 0) && (this.B > 0) && (this.B >  this.A)) this.C = 180 - this.B - this.A;
@@ -159,12 +203,39 @@ public class TrigCalc {
     findLastAngle();
   }
 
+  public void solveSSA() {
+     if ((this.B > 0) && (this.b > 0) && (this.c > 0)) this.C = Math.toDegrees(Math.asin( (this.c * Math.sin(Math.toRadians(this.B))) / this.b));
+     if ((this.B > 0) && (this.b > 0) && (this.a > 0)) this.A = Math.toDegrees(Math.asin( (this.a * Math.sin(Math.toRadians(this.B))) / this.b));
+     findLastAngle();
+     if (this.a == 0) this.a = (Math.sin(Math.toRadians(this.A)) * this.b) / Math.sin(Math.toRadians(this.B));
+     if (this.b == 0) this.b = (Math.sin(Math.toRadians(this.B)) * this.c) / Math.sin(Math.toRadians(this.C));
+     if (this.c == 0) this.c = (Math.sin(Math.toRadians(this.C)) * this.a) / Math.sin(Math.toRadians(this.A));
+
+  }
+
+
+
+
   public static void main(String[] args) {
     TrigCalc tc = new TrigCalc();
     tc.printDiagram();
     tc.parseArgs(args);
     if ( tc.isAAS() || tc.isASA() ) tc.solveAAS();
-    if ( tc.isSAS() ) tc.solveSAS();
+    if (tc.isSAS()) tc.solveSAS();
+    if (tc.isSSA()) {
+      if (tc.isInvalidSSA()) {
+        System.out.println("INVALID SSA");
+        System.exit(1);
+      } else if (tc.isObliqueSSA() || tc.isRightSSA()) {
+        tc.solveSSA();
+      } else if (tc.isAmbiguousSSA()) {
+        tc.solveSSA();
+        tc.printVals();
+        tc.solveSupplementSSA();
+      }
+    }
+
+
     tc.printVals();
   }
 }
