@@ -7,6 +7,7 @@ public class TrigCalc {
   private String solutionMethod = "NNN";
 
   public void parseArgs(String[] args) {
+    this.A = this.B = this.C = this.a = this.b = this.c = 0;
     for (int i = 0; i < args.length; i++) {
       switch (args[i]) {
         case "-A":
@@ -213,6 +214,11 @@ public class TrigCalc {
 
   }
 
+  public void solveSupplementSSA() {
+    if ((this.B > 0) && (this.b > 0) && (this.c > 0)) this.C = 180 - (Math.toDegrees(Math.asin( (this.c * Math.sin(Math.toRadians(this.B))) / this.b)));
+    findLastAngle();
+    if (this.a == 0) this.a = (Math.sin(Math.toRadians(this.A)) * this.b) / Math.sin(Math.toRadians(this.B));
+  }
 
 
 
@@ -231,6 +237,7 @@ public class TrigCalc {
       } else if (tc.isAmbiguousSSA()) {
         tc.solveSSA();
         tc.printVals();
+        tc.parseArgs(args);
         tc.solveSupplementSSA();
       }
     }
