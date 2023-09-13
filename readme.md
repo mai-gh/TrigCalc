@@ -20,3 +20,7 @@
 `$ jar cfe TrigCalc.jar TrigCalc TrigCalc.class`
 
 `$ java -jar TrigCalc.jar -A 35 -B 83 -b 7.87`
+
+#### Testing:
+
+`$ javac *.java; java -ea TrigCalcTest`

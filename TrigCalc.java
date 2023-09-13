@@ -1,6 +1,7 @@
 import java.lang.Math;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public class TrigCalc {
   private double A, B, C, a, b, c; 
@@ -63,18 +64,38 @@ public class TrigCalc {
   }
 
   public void printVals() {
-    DecimalFormat df = new DecimalFormat("#.00");
-    df.setRoundingMode(RoundingMode.HALF_UP);
-    System.out.println("    M = " + solutionMethod    + 
-                       "    A = " + df.format(this.A) + 
-                       "    B = " + df.format(this.B) + 
-                       "    C = " + df.format(this.C) + 
-                       "    a = " + df.format(this.a) + 
-                       "    b = " + df.format(this.b) +
-                       "    c = " + df.format(this.c) +
-                       "\n"
+    String s = "    ";
+    System.out.println("M = " + solutionMethod + s +
+                       "A = " + this.A + s +
+                       "B = " + this.B + s +
+                       "C = " + this.C + s +
+                       "a = " + this.a + s +
+                       "b = " + this.b + s +
+                       "c = " + this.c
                       );
   }
+
+  public void roundVals() {
+    this.A = BigDecimal.valueOf(this.A).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    this.B = BigDecimal.valueOf(this.B).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    this.C = BigDecimal.valueOf(this.C).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    this.a = BigDecimal.valueOf(this.a).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    this.b = BigDecimal.valueOf(this.b).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    this.c = BigDecimal.valueOf(this.c).setScale(2, RoundingMode.HALF_UP).doubleValue();
+  }
+
+  public Map<String,Double> returnVals() {
+    Map<String,Double> map = Map.of(
+      "A", this.A, 
+      "B", this.B,
+      "C", this.C,
+      "a", this.a,
+      "b", this.b,
+      "c", this.c
+    );
+    return map;
+  }
+
 
   public boolean isAAA() {
     return ((this.A > 0) && (this.B > 0) && (this.C > 0) && (this.a == 0) && (this.b == 0) && (this.c == 0)); // A & B & C
@@ -243,6 +264,7 @@ public class TrigCalc {
     }
 
 
+    tc.roundVals();
     tc.printVals();
   }
 }
