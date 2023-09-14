@@ -23,4 +23,4 @@
 
 #### Testing:
 
-`$ javac *.java; java -ea TrigCalcTest`
+`$ javac *.java && java -ea TrigCalcTest`

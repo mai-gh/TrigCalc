@@ -3,9 +3,16 @@ import java.math.RoundingMode;
 import java.math.BigDecimal;
 import java.util.Map;
 
+enum solutionTypeEnum { NULL, AAA, AAS, ASA, SAS, SSA, SSS }
+enum SSATypeEnum { NULL, INVALID, RIGHT, AMBIGUOUS, OBLIQUE };
+
 public class TrigCalc {
   private double A, B, C, a, b, c; 
-  private String solutionMethod = "NNN";
+  private solutionTypeEnum solutionType = solutionTypeEnum.NULL;
+  private SSATypeEnum SSAType = SSATypeEnum.NULL;
+  
+  
+
 
   public void parseArgs(String[] args) {
     this.A = this.B = this.C = this.a = this.b = this.c = 0;
@@ -64,14 +71,15 @@ public class TrigCalc {
   }
 
   public void printVals() {
-    String s = "    ";
-    System.out.println("M = " + solutionMethod + s +
-                       "A = " + this.A + s +
-                       "B = " + this.B + s +
-                       "C = " + this.C + s +
-                       "a = " + this.a + s +
-                       "b = " + this.b + s +
-                       "c = " + this.c
+    String s = "   ";
+    System.out.println("Type:" + this.solutionType + s +
+                       "SSAType:" + this.SSAType + s +
+                       "A:" + this.A + s +
+                       "B:" + this.B + s +
+                       "C:" + this.C + s +
+                       "a:" + this.a + s +
+                       "b:" + this.b + s +
+                       "c:" + this.c
                       );
   }
 
@@ -96,10 +104,30 @@ public class TrigCalc {
     return map;
   }
 
+  public solutionTypeEnum returnSolutionType() {
+    return this.solutionType;
+  }
+
+  public void determineSolutionType() {
+    if (isAAA())      { this.solutionType = solutionTypeEnum.AAA; }
+    else if (isAAS()) { this.solutionType = solutionTypeEnum.AAS; }
+    else if (isASA()) { this.solutionType = solutionTypeEnum.ASA; }
+    else if (isSAS()) { this.solutionType = solutionTypeEnum.SAS; }
+    else if (isSSS()) { this.solutionType = solutionTypeEnum.SSS; }
+    else if (isSSA()) {
+      this.solutionType = solutionTypeEnum.SSA;
+      if (isInvalidSSA()) this.SSAType = SSATypeEnum.INVALID;
+      if (isRightSSA()) this.SSAType = SSATypeEnum.RIGHT;
+      if (isAmbiguousSSA()) this.SSAType = SSATypeEnum.AMBIGUOUS;
+      if (isObliqueSSA()) this.SSAType = SSATypeEnum.OBLIQUE;
+    }
+  }
+
 
   public boolean isAAA() {
     return ((this.A > 0) && (this.B > 0) && (this.C > 0) && (this.a == 0) && (this.b == 0) && (this.c == 0)); // A & B & C
   }
+
 
   public boolean isAAS() {
     return 
@@ -189,6 +217,7 @@ public class TrigCalc {
     return false;
   }
 
+
   public void findLastAngle() {
     if ((this.A > 0) && (this.B > 0) && (this.A >= this.B)) this.C = 180 - this.A - this.B;
     if ((this.A > 0) && (this.B > 0) && (this.B >  this.A)) this.C = 180 - this.B - this.A;
@@ -241,12 +270,43 @@ public class TrigCalc {
     if (this.a == 0) this.a = (Math.sin(Math.toRadians(this.A)) * this.b) / Math.sin(Math.toRadians(this.B));
   }
 
+  public void solve() {
+    switch (this.solutionType) {
+      case AAS:
+      case ASA:
+        solveAAS();
+        break;
+
+      case SAS:
+        solveSAS();
+        break;
+      case SSS:
+        break;
+      case AAA:
+        break;
+      case SSA:
+        switch (this.SSAType) {
+          case INVALID:
+            break;
+          case RIGHT:
+            break;
+          case AMBIGUOUS:
+            break;
+          case OBLIQUE:
+        }
+        break;
+    }
+  }
 
 
   public static void main(String[] args) {
     TrigCalc tc = new TrigCalc();
     tc.printDiagram();
     tc.parseArgs(args);
+    tc.determineSolutionType();
+    tc.solve();
+
+/*
     if ( tc.isAAS() || tc.isASA() ) tc.solveAAS();
     if (tc.isSAS()) tc.solveSAS();
     if (tc.isSSA()) {
@@ -262,7 +322,7 @@ public class TrigCalc {
         tc.solveSupplementSSA();
       }
     }
-
+*/
 
     tc.roundVals();
     tc.printVals();
