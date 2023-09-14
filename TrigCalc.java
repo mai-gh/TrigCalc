@@ -92,16 +92,25 @@ public class TrigCalc {
     this.c = BigDecimal.valueOf(this.c).setScale(2, RoundingMode.HALF_UP).doubleValue();
   }
 
-  public Map<String,Double> returnVals() {
-    Map<String,Double> map = Map.of(
-      "A", this.A, 
-      "B", this.B,
-      "C", this.C,
-      "a", this.a,
-      "b", this.b,
-      "c", this.c
+  public Map<Character,Double> returnVals() {
+    Map<Character,Double> map = Map.of(
+      'A', this.A, 
+      'B', this.B,
+      'C', this.C,
+      'a', this.a,
+      'b', this.b,
+      'c', this.c
     );
     return map;
+  }
+
+  public void setVals(Map<Character,Double> map) {
+    if (map.containsKey('A')) this.A = map.get('A');
+    if (map.containsKey('B')) this.B = map.get('B');
+    if (map.containsKey('C')) this.C = map.get('C');
+    if (map.containsKey('a')) this.a = map.get('a');
+    if (map.containsKey('b')) this.b = map.get('b');
+    if (map.containsKey('c')) this.c = map.get('c');
   }
 
   public solutionTypeEnum returnSolutionType() {
@@ -228,7 +237,7 @@ public class TrigCalc {
   }
 
   public void solveAAA() {
-    assert true; // do nothing
+    System.out.println("ERROR: can find lengths for AAA. please provice length of atleast one side.");
   }
 
   public void solveAAS() {
@@ -261,7 +270,6 @@ public class TrigCalc {
      if (this.a == 0) this.a = (Math.sin(Math.toRadians(this.A)) * this.b) / Math.sin(Math.toRadians(this.B));
      if (this.b == 0) this.b = (Math.sin(Math.toRadians(this.B)) * this.c) / Math.sin(Math.toRadians(this.C));
      if (this.c == 0) this.c = (Math.sin(Math.toRadians(this.C)) * this.a) / Math.sin(Math.toRadians(this.A));
-
   }
 
   public void solveSupplementSSA() {
@@ -272,6 +280,8 @@ public class TrigCalc {
 
   public void solve() {
     switch (this.solutionType) {
+      case AAA:
+        break;
       case AAS:
       case ASA:
         solveAAS();
@@ -281,8 +291,6 @@ public class TrigCalc {
         solveSAS();
         break;
       case SSS:
-        break;
-      case AAA:
         break;
       case SSA:
         switch (this.SSAType) {
