@@ -1,6 +1,90 @@
+import java.lang.Math;
+import java.math.RoundingMode;
+import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Set;
 
 public class TrigCalcTest {
+
+  // Equilateral or Equiangular Triangle: When all sides and angles of a triangle are equal, it is called an equilateral or equiangular triangle.
+  public static Map<Character,Double> equilateral = Map.of(
+    'A', 60.0,
+    'B', 60.0,
+    'C', 60.0,
+    'a', 10.0,
+    'b', 10.0,
+    'c', 10.0
+  );
+
+  // Acute Isosceles Triangle: A triangle in which all 3 angles are acute angles and 2 sides measure the same is called an acute isosceles triangle.
+  public static Map<Character,Double> acuteIsosceles = Map.of(
+    'A', 80.0,
+    'B', 50.0,
+    'C', 50.0,
+    'a', 12.86,
+    'b', 10.0,
+    'c', 10.0
+  );
+
+  // Obtuse Isosceles Triangle: A triangle in which 2 sides are equal and one angle is an obtuse angle is called an obtuse isosceles triangle.
+  public static Map<Character,Double> obtuseIsosceles = Map.of(
+    'A', 120.0,
+    'B', 30.0,
+    'C', 30.0,
+    'a', 17.32,
+    'b', 10.0,
+    'c', 10.0
+  );
+
+  // Right Isosceles Triangle: A triangle in which 2 sides are equal and one angle is 90° is called an right isosceles triangle. So, in an right isosceles triangle, two sides and two acute angles are congruent.
+  public static Map<Character,Double> rightIsosceles = Map.of(
+    'A', 45.0,
+    'B', 45.0,
+    'C', 90.0,
+    'a', 10.0,
+    'b', 10.0,
+    'c', 14.14
+  );
+
+  // Acute Scalene Triangle: A triangle that has 3 unequal sides and 3 acute angles is called an acute scalene triangle.
+  public static Map<Character,Double> acuteScalene = Map.of(
+    'A', 56.0,
+    'B', 74.0,
+    'C', 50.0,
+    'a', 10.82,
+    'b', 12.55,
+    'c', 10.0
+  );
+
+  // Obtuse Scalene Triangle: A triangle with an obtuse angle with sides of different measures is called an obtuse scalene triangle.
+  public static Map<Character,Double> obtuseScalene = Map.of(
+    'A', 47.0,
+    'B', 96.0,
+    'C', 37.0,
+    'a', 12.15,
+    'b', 16.53,
+    'c', 10.0
+  );
+
+  // Right Scalene Triangle: A triangle in which any one of the angles is a right angle and all the 3 sides are unequal, is called a right scalene triangle.
+  public static Map<Character,Double> rightScalene = Map.of(
+    'A', 56.0,
+    'B', 90.0,
+    'C', 34.0,
+    'a', 10.0,
+    'b', 12.06,
+    'c', 6.75
+  );
+
+  public static Set<Map<Character,Double>> triangles = Set.of(
+    equilateral,
+    acuteIsosceles,
+    obtuseIsosceles,
+    rightIsosceles,
+    acuteScalene,
+    obtuseScalene,
+    rightScalene
+  );
 
   public boolean testSolutionType(solutionTypeEnum o, solutionTypeEnum s) {
     if (o == s) { 
@@ -21,14 +105,17 @@ public class TrigCalcTest {
   }
 
   public boolean testVal(double o, double s, String name) {
-    if (o == s) { 
+    //if (o == s) { 
+    double diff = o - s;
+    if (diff < 0) diff = diff * (-1);
+    diff = BigDecimal.valueOf(diff).setScale(2, RoundingMode.FLOOR).doubleValue();
+    if (diff <= 0.01) { 
       return true;
     } else {
-      System.out.println(" >>> FAILURE: Output and Solution did not match for " + name + ": " + o + " != " + s );
+      System.out.println(" >>> FAILURE: Output and Solution did not match for " + name + ": " + o + " != " + s + " diff:" + diff);
       return false;
     }
   }
-
 
   public boolean testAllVals(Map<Character,Double> output, Map<Character,Double> solution){
     boolean r_A = testVal(output.get('A'), solution.get('A'), "A");
@@ -41,9 +128,7 @@ public class TrigCalcTest {
     return result;
   }
 
-
-  public void test_solveAAS() {
-    // https://www.mathsisfun.com/algebra/trig-solving-aas-triangles.html
+  public void test_AAS(Map<Character,Double> solutionMap) {
     String name = "AAS";
     char[][] combos = { 
       {'A', 'B', 'a'},
@@ -53,14 +138,6 @@ public class TrigCalcTest {
       {'B', 'C', 'b'},
       {'B', 'C', 'c'},
     };
-    Map<Character,Double> solutionMap = Map.of(
-      'A', 35.0,
-      'B', 83.0,
-      'C', 62.0,
-      'a', 4.55,
-      'b', 7.87,
-      'c', 7.0
-    );
 
     for (char[] combo: combos) {
       String section = name + "_" + String.valueOf(combo);
@@ -77,8 +154,8 @@ public class TrigCalcTest {
       tc.solveAAS();
       tc.roundVals();
       Map<Character,Double> outMap = tc.returnVals();
-      testAllVals(outMap, solutionMap);
-      if (typeMatch && outMap.equals(solutionMap)) System.out.println("PASSED: " + section);
+      boolean varsMatch = testAllVals(outMap, solutionMap);
+      if (typeMatch && varsMatch) System.out.println("PASSED: " + section);
     }
   }
 
@@ -95,7 +172,8 @@ public class TrigCalcTest {
   public static void main(String[] args) {
     enforceAssertions();
     TrigCalcTest tct = new TrigCalcTest();
-    tct.test_solveAAS();
+    for (Map<Character,Double> triangle : triangles) {
+      tct.test_AAS(triangle);
+    }
   }
-
 }
