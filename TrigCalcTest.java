@@ -128,6 +128,38 @@ public class TrigCalcTest {
     return result;
   }
 
+  public boolean testAllVals_AAA(Map<Character,Double> output, Map<Character,Double> solution){
+    boolean r_A = testVal(output.get('A'), solution.get('A'), "A");
+    boolean r_B = testVal(output.get('B'), solution.get('B'), "B");
+    boolean r_C = testVal(output.get('C'), solution.get('C'), "C");
+    boolean r_a = testVal(output.get('a'), 0.0, "a");
+    boolean r_b = testVal(output.get('b'), 0.0, "b");
+    boolean r_c = testVal(output.get('c'), 0.0, "c");
+    boolean result = (r_A && r_B && r_C && r_a && r_b && r_c);
+    return result;
+  }
+
+  public void test_AAA(Map<Character,Double> solutionMap) {
+    String name = "AAA";
+    char combo[] = { 'A', 'B', 'C' };
+    String section = name + "_" + String.valueOf(combo);
+    System.out.println("Now Testing: " + section);
+    Map<Character,Double> query = Map.of(
+      combo[0], solutionMap.get(combo[0]), 
+      combo[1], solutionMap.get(combo[1]), 
+      combo[2], solutionMap.get(combo[2]) 
+    );
+    TrigCalc tc = new TrigCalc();
+    tc.setVals(query);
+    tc.determineSolutionType();
+    boolean typeMatch = testSolutionType(tc.returnSolutionType(), solutionTypeEnum.AAA);
+    tc.solveAAS();
+    tc.roundVals();
+    Map<Character,Double> outMap = tc.returnVals();
+    boolean varsMatch = testAllVals_AAA(outMap, solutionMap);
+    if (typeMatch && varsMatch) System.out.println("PASSED: " + section);
+  }
+
   public void test_AAS(Map<Character,Double> solutionMap) {
     String name = "AAS";
     char[][] combos = { 
@@ -158,6 +190,17 @@ public class TrigCalcTest {
       if (typeMatch && varsMatch) System.out.println("PASSED: " + section);
     }
   }
+  
+  public void test_ASA() {}
+
+  public void test_SAS() {}
+  
+  public void test_SSS() {}
+
+  public void test_InvalidSSA() {}
+  public void test_RightSSA() {}
+  public void test_ObliqueSSA() {}
+  public void test_AmbiguousSSA() {}
 
   public static void enforceAssertions() {
     try {
@@ -173,6 +216,7 @@ public class TrigCalcTest {
     enforceAssertions();
     TrigCalcTest tct = new TrigCalcTest();
     for (Map<Character,Double> triangle : triangles) {
+      tct.test_AAA(triangle);
       tct.test_AAS(triangle);
     }
   }
