@@ -263,6 +263,12 @@ public class TrigCalc {
     findLastAngle();
   }
 
+  public void solveSSS() {
+    this.A = Math.toDegrees(Math.acos( (Math.pow(this.b, 2) + Math.pow(this.c, 2) - Math.pow(this.a, 2)) / (2*this.b*this.c)))    ;
+    this.B = Math.toDegrees(Math.acos( (Math.pow(this.a, 2) + Math.pow(this.c, 2) - Math.pow(this.b, 2)) / (2*this.a*this.c)))    ;
+    this.C = Math.toDegrees(Math.acos( (Math.pow(this.a, 2) + Math.pow(this.b, 2) - Math.pow(this.c, 2)) / (2*this.a*this.b)))    ;
+  }
+
   public void solveSSA() {
      if ((this.B > 0) && (this.b > 0) && (this.c > 0)) this.C = Math.toDegrees(Math.asin( (this.c * Math.sin(Math.toRadians(this.B))) / this.b));
      if ((this.B > 0) && (this.b > 0) && (this.a > 0)) this.A = Math.toDegrees(Math.asin( (this.a * Math.sin(Math.toRadians(this.B))) / this.b));
@@ -281,16 +287,17 @@ public class TrigCalc {
   public void solve() {
     switch (this.solutionType) {
       case AAA:
+        solveAAA();
         break;
       case AAS:
       case ASA:
         solveAAS();
         break;
-
       case SAS:
         solveSAS();
         break;
       case SSS:
+        solveSSS();
         break;
       case SSA:
         switch (this.SSAType) {
