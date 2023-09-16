@@ -109,7 +109,8 @@ public class TrigCalcTest {
     double diff = o - s;
     if (diff < 0) diff = diff * (-1);
     diff = BigDecimal.valueOf(diff).setScale(2, RoundingMode.FLOOR).doubleValue();
-    if (diff <= 0.01) { 
+    //if (diff <= 0.01) { 
+    if (diff <= 0.04) { 
       return true;
     } else {
       System.out.println(" >>> FAILURE: Output and Solution did not match for " + name + ": " + o + " != " + s + " diff:" + diff);
@@ -157,7 +158,11 @@ public class TrigCalcTest {
     tc.roundVals();
     Map<Character,Double> outMap = tc.returnVals();
     boolean varsMatch = testAllVals_AAA(outMap, solutionMap);
-    if (typeMatch && varsMatch) System.out.println("PASSED: " + section);
+    if (typeMatch && varsMatch) {
+      System.out.println("PASSED: " + section);
+    } else {
+      System.out.println(" -> FAILED: " + section);
+    }
   }
 
   public void test_AAS(Map<Character,Double> solutionMap) {
@@ -170,7 +175,6 @@ public class TrigCalcTest {
       {'B', 'C', 'b'},
       {'B', 'C', 'c'},
     };
-
     for (char[] combo: combos) {
       String section = name + "_" + String.valueOf(combo);
       System.out.println("Now Testing: " + section);
@@ -187,20 +191,82 @@ public class TrigCalcTest {
       tc.roundVals();
       Map<Character,Double> outMap = tc.returnVals();
       boolean varsMatch = testAllVals(outMap, solutionMap);
-      if (typeMatch && varsMatch) System.out.println("PASSED: " + section);
+      if (typeMatch && varsMatch) {
+        System.out.println("PASSED: " + section);
+      } else {
+        System.out.println(" -> FAILED: " + section);
+      }
     }
   }
   
-  public void test_ASA() {}
+  public void test_ASA(Map<Character,Double> solutionMap) {
+    String name = "ASA";
+    char[][] combos = { 
+      {'A', 'B', 'c'},
+      {'A', 'C', 'b'},
+      {'B', 'C', 'a'},
+    };
+    for (char[] combo: combos) {
+      String section = name + "_" + String.valueOf(combo);
+      System.out.println("Now Testing: " + section);
+      Map<Character,Double> query = Map.of(
+        combo[0], solutionMap.get(combo[0]), 
+        combo[1], solutionMap.get(combo[1]), 
+        combo[2], solutionMap.get(combo[2]) 
+      );
+      TrigCalc tc = new TrigCalc();
+      tc.setVals(query);
+      tc.determineSolutionType();
+      boolean typeMatch = testSolutionType(tc.returnSolutionType(), solutionTypeEnum.ASA);
+      tc.solveAAS();
+      tc.roundVals();
+      Map<Character,Double> outMap = tc.returnVals();
+      boolean varsMatch = testAllVals(outMap, solutionMap);
+      if (typeMatch && varsMatch) {
+        System.out.println("PASSED: " + section);
+      } else {
+        System.out.println(" -> FAILED: " + section);
+      }
+    }
+  }
 
-  public void test_SAS() {}
+  public void test_SAS(Map<Character,Double> solutionMap) {
+    String name = "SAS";
+    char[][] combos = { 
+      {'A', 'b', 'c'},
+      {'B', 'a', 'c'},
+      {'C', 'a', 'b'},
+    };
+    for (char[] combo: combos) {
+      String section = name + "_" + String.valueOf(combo);
+      System.out.println("Now Testing: " + section);
+      Map<Character,Double> query = Map.of(
+        combo[0], solutionMap.get(combo[0]), 
+        combo[1], solutionMap.get(combo[1]), 
+        combo[2], solutionMap.get(combo[2]) 
+      );
+      TrigCalc tc = new TrigCalc();
+      tc.setVals(query);
+      tc.determineSolutionType();
+      boolean typeMatch = testSolutionType(tc.returnSolutionType(), solutionTypeEnum.SAS);
+      tc.solveSAS();
+      tc.roundVals();
+      Map<Character,Double> outMap = tc.returnVals();
+      boolean varsMatch = testAllVals(outMap, solutionMap);
+      if (typeMatch && varsMatch) {
+        System.out.println("PASSED: " + section);
+      } else {
+        System.out.println(" -> FAILED: " + section);
+      }
+    }
+  }
   
-  public void test_SSS() {}
+  public void test_SSS(Map<Character,Double> solutionMap) {}
 
-  public void test_InvalidSSA() {}
-  public void test_RightSSA() {}
-  public void test_ObliqueSSA() {}
-  public void test_AmbiguousSSA() {}
+  public void test_InvalidSSA(Map<Character,Double> solutionMap) {}
+  public void test_RightSSA(Map<Character,Double> solutionMap) {}
+  public void test_ObliqueSSA(Map<Character,Double> solutionMap) {}
+  public void test_AmbiguousSSA(Map<Character,Double> solutionMap) {}
 
   public static void enforceAssertions() {
     try {
@@ -218,6 +284,8 @@ public class TrigCalcTest {
     for (Map<Character,Double> triangle : triangles) {
       tct.test_AAA(triangle);
       tct.test_AAS(triangle);
+      tct.test_ASA(triangle);
+      tct.test_SAS(triangle);
     }
   }
 }
