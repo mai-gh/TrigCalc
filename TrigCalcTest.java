@@ -2,6 +2,7 @@ import java.lang.Math;
 import java.math.RoundingMode;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 
 public class TrigCalcTest {
@@ -129,17 +130,6 @@ public class TrigCalcTest {
     return result;
   }
 
-  public boolean testAllVals_AAA(Map<Character,Double> output, Map<Character,Double> solution){
-    boolean r_A = testVal(output.get('A'), solution.get('A'), "A");
-    boolean r_B = testVal(output.get('B'), solution.get('B'), "B");
-    boolean r_C = testVal(output.get('C'), solution.get('C'), "C");
-    boolean r_a = testVal(output.get('a'), 0.0, "a");
-    boolean r_b = testVal(output.get('b'), 0.0, "b");
-    boolean r_c = testVal(output.get('c'), 0.0, "c");
-    boolean result = (r_A && r_B && r_C && r_a && r_b && r_c);
-    return result;
-  }
-
   public void test_AAA(Map<Character,Double> solutionMap) {
     String name = "AAA";
     char combo[] = { 'A', 'B', 'C' };
@@ -148,16 +138,24 @@ public class TrigCalcTest {
     Map<Character,Double> query = Map.of(
       combo[0], solutionMap.get(combo[0]), 
       combo[1], solutionMap.get(combo[1]), 
-      combo[2], solutionMap.get(combo[2]) 
+      combo[2], solutionMap.get(combo[2]), 
+      'a', 0.0,
+      'b', 0.0,
+      'c', 0.0
     );
     TrigCalc tc = new TrigCalc();
     tc.setVals(query);
     tc.determineSolutionType();
     boolean typeMatch = testSolutionType(tc.returnSolutionType(), solutionTypeEnum.AAA);
-    tc.solveAAS();
+    tc.solveAAA();
     tc.roundVals();
     Map<Character,Double> outMap = tc.returnVals();
-    boolean varsMatch = testAllVals_AAA(outMap, solutionMap);
+    Map<Character,Double> modifiedSolutionMap = new HashMap<Character,Double>();
+    modifiedSolutionMap.putAll(solutionMap);
+    modifiedSolutionMap.put('a', 0.0);
+    modifiedSolutionMap.put('b', 0.0);
+    modifiedSolutionMap.put('c', 0.0);
+    boolean varsMatch = testAllVals(outMap, modifiedSolutionMap);
     if (typeMatch && varsMatch) {
       System.out.println("PASSED: " + section);
     } else {

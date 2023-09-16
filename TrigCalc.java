@@ -237,7 +237,6 @@ public class TrigCalc {
   }
 
   public void solveAAA() {
-    System.out.println("ERROR: can find lengths for AAA. please provice length of atleast one side.");
   }
 
   public void solveAAS() {
@@ -288,6 +287,7 @@ public class TrigCalc {
     switch (this.solutionType) {
       case AAA:
         solveAAA();
+        System.out.println("ERROR: can find lengths for AAA. please provice length of atleast one side.");
         break;
       case AAS:
       case ASA:
